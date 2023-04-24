@@ -62,8 +62,8 @@ public class SimpleGraphicsLibrary extends JPanel {
 
 
     public void paintCell(int yCord, int xCord){
-        for (int i = yCord; i < yCord + Cell.CELL_HEIGHT; i++) {
-            for (int j = xCord; j < xCord + Cell.CELL_WIDTH; j++) {
+        for (int i = yCord; i < yCord + Cell.HEIGHT; i++) {
+            for (int j = xCord; j < xCord + Cell.WIDTH; j++) {
                 setPixel(j,i, Color.black);
             }
         }
