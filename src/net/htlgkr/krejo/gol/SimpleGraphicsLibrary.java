@@ -11,8 +11,6 @@ public class SimpleGraphicsLibrary extends JPanel {
     private final Color background;
     private int[] pixels;
 
-    Graphics2D graphics2D;
-
     public SimpleGraphicsLibrary(int width, int height, Color background) {
         this.width = width;
         this.height = height;
@@ -61,10 +59,10 @@ public class SimpleGraphicsLibrary extends JPanel {
     }
 
 
-    public void paintCell(int yCord, int xCord){
+    public void paintCell(int yCord, int xCord, Color color){
         for (int i = yCord; i < yCord + Cell.HEIGHT; i++) {
             for (int j = xCord; j < xCord + Cell.WIDTH; j++) {
-                setPixel(j,i, Color.black);
+                setPixel(j,i, color);
             }
         }
         repaint();

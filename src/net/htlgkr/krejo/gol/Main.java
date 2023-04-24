@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Scanner;
 
+
+
 public class Main {
     private static final int width = 800;
     private static final int height = 800;
@@ -15,7 +17,7 @@ public class Main {
 
     private static SimpleGraphicsLibrary sgl = new SimpleGraphicsLibrary(width, height, Color.LIGHT_GRAY);
 
-    private static final File FILE = new File("src/position1.txt");
+    private static final File FILE = new File("src/position2.txt");
 
     //Todo: Spiellogik mocha
 
@@ -31,15 +33,15 @@ public class Main {
     }
 
     private static void startGame() throws InterruptedException {
+
         while (true) {
 
             printPanelfromField(field);
 
+            Thread.sleep(0);
             createNextPosition();
 
-            field = futureField;
-            //todo: überleg da do de reihenfolge und zuweisung wonnst futurefield nimmst und won ned
-            Thread.sleep(1000);
+            copyFields();
         }
     }
 
@@ -49,30 +51,26 @@ public class Main {
             for (int x = 0; x < field[y].length; x++) {
                 int aliveNeighbours = getAliveNeighbours(y, x);
 
+
+
                 if (aliveNeighbours == 3){
+
                     futureField[y][x] = true;
 
+
                 } else if (aliveNeighbours == 2){
-                    futureField[y][x] = field[y][x];
+
+                    if (field[y][x]){
+                        futureField[y][x] = true;
+                    } else {
+                        futureField[y][x] = false;
+                    }
+
 
                 } else {
+
                     futureField[y][x] = false;
                 }
-
-
-//                //Any live cell with fewer than two live neighbours dies (referred to as underpopulation).
-//                //Any live cell with more than three live neighbours dies (referred to as overpopulation).
-//                if (aliveNeighbours < 2 || 3 < aliveNeighbours) {
-//                    futureField[y][x] = false;
-//
-//                    //Any dead cell with exactly three live neighbours comes to life.
-//                } else if (!field[y][x] && aliveNeighbours == 3) {
-//                    futureField[y][x] = true;
-//
-//                    //Any live cell with two or three live neighbours lives, unchanged, to the next generation.
-//                } else if (field[y][x]) {
-//                    futureField[y][x] = true;
-//                }
             }
         }
     }
@@ -84,13 +82,13 @@ public class Main {
                 if (i == 0 && j == 0) {
                     continue;
                 }
-                int xx = x + i;
-                int yy = y + j;
+                int yy = y + i;
+                int xx = x + j;
                 if (xx < 0 || xx >= width || yy < 0 || yy >= height) {
                     continue;
                 }
                 try {
-                    if (field[xx][yy]) {
+                    if (field[yy][xx]) {
                         aliveNeighbours++;
                     }
                 } catch (IndexOutOfBoundsException e) {
@@ -99,6 +97,18 @@ public class Main {
             }
         }
         return aliveNeighbours;
+    }
+
+    private static void copyFields() {
+        for (int y = 0; y < futureField.length; y++) {
+            for (int x = 0; x < futureField[y].length; x++) {
+                if (futureField[y][x]){
+                    field[y][x] = true;
+                } else {
+                    field[y][x] = false;
+                }
+            }
+        }
     }
 
 
@@ -125,7 +135,9 @@ public class Main {
         for (int y = 0; y < field.length; y++) {
             for (int x = 0; x < field[y].length; x++) {
                 if (field[y][x]) {
-                    sgl.paintCell(y * Cell.HEIGHT, x * Cell.WIDTH);
+                    sgl.paintCell(y * Cell.HEIGHT, x * Cell.WIDTH, Cell.ALIVE_COLOR);
+                } else {
+                    sgl.paintCell(y * Cell.HEIGHT, x * Cell.WIDTH, Cell.DEAD_COLOR);
                 }
             }
         }
