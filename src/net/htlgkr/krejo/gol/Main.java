@@ -2,25 +2,19 @@ package net.htlgkr.krejo.gol;
 
 import java.awt.*;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Scanner;
 
 
-
 public class Main {
-    private static final int width = 800;
-    private static final int height = 800;
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 800;
 
+    private static boolean[][] field = new boolean[HEIGHT / Cell.HEIGHT][WIDTH / Cell.WIDTH];
+    private static boolean[][] futureField = new boolean[HEIGHT / Cell.HEIGHT][WIDTH / Cell.WIDTH];
 
-    private static boolean[][] field = new boolean[height / Cell.HEIGHT][width / Cell.WIDTH];
-    private static boolean[][] futureField = new boolean[height / Cell.HEIGHT][width / Cell.WIDTH];
+    private static SimpleGraphicsLibrary sgl = new SimpleGraphicsLibrary(WIDTH, HEIGHT, Color.LIGHT_GRAY);
 
-    private static SimpleGraphicsLibrary sgl = new SimpleGraphicsLibrary(width, height, Color.LIGHT_GRAY);
-
-    private static final File FILE = new File("src/position2.txt");
-
-    //Todo: Spiellogik mocha
-
+    private static final File FILE = new File("src/position3.txt");
 
     public static void main(String[] args) {
 
@@ -33,42 +27,31 @@ public class Main {
     }
 
     private static void startGame() throws InterruptedException {
-
         while (true) {
-
-            printPanelfromField(field);
+            printPanelFromField(field);
 
             Thread.sleep(0);
-            createNextPosition();
 
+            createNextGeneration();
             copyFields();
         }
     }
 
-    private static void createNextPosition() {
+    private static void createNextGeneration() {
 
         for (int y = 0; y < field.length; y++) {
             for (int x = 0; x < field[y].length; x++) {
                 int aliveNeighbours = getAliveNeighbours(y, x);
 
-
-
-                if (aliveNeighbours == 3){
-
+                if (aliveNeighbours == 3) {
                     futureField[y][x] = true;
-
-
-                } else if (aliveNeighbours == 2){
-
-                    if (field[y][x]){
+                } else if (aliveNeighbours == 2) {
+                    if (field[y][x]) {
                         futureField[y][x] = true;
                     } else {
                         futureField[y][x] = false;
                     }
-
-
                 } else {
-
                     futureField[y][x] = false;
                 }
             }
@@ -79,20 +62,20 @@ public class Main {
         int aliveNeighbours = 0;
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
+
                 if (i == 0 && j == 0) {
                     continue;
                 }
-                int yy = y + i;
-                int xx = x + j;
-                if (xx < 0 || xx >= width || yy < 0 || yy >= height) {
+
+                int neighbourY = y + i;
+                int neighbourX = x + j;
+
+                if (neighbourX < 0 || neighbourX >= WIDTH/Cell.WIDTH || neighbourY < 0 || neighbourY >= HEIGHT/Cell.HEIGHT) {
                     continue;
                 }
-                try {
-                    if (field[yy][xx]) {
-                        aliveNeighbours++;
-                    }
-                } catch (IndexOutOfBoundsException e) {
 
+                if (field[neighbourY][neighbourX]) {
+                    aliveNeighbours++;
                 }
             }
         }
@@ -102,7 +85,7 @@ public class Main {
     private static void copyFields() {
         for (int y = 0; y < futureField.length; y++) {
             for (int x = 0; x < futureField[y].length; x++) {
-                if (futureField[y][x]){
+                if (futureField[y][x]) {
                     field[y][x] = true;
                 } else {
                     field[y][x] = false;
@@ -110,7 +93,6 @@ public class Main {
             }
         }
     }
-
 
     private static void createStartPosition(File file) {
         Scanner fileScanner = null;
@@ -128,10 +110,9 @@ public class Main {
                 System.err.println("Incorrect config in " + file);
             }
         }
-
     }
 
-    public static void printPanelfromField(boolean[][] field) {
+    public static void printPanelFromField(boolean[][] field) {
         for (int y = 0; y < field.length; y++) {
             for (int x = 0; x < field[y].length; x++) {
                 if (field[y][x]) {
@@ -141,7 +122,5 @@ public class Main {
                 }
             }
         }
-
     }
-
 }
